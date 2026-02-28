@@ -64,7 +64,9 @@ jobs:
                 echo "Release PR created successfully."
               elif [ "$HTTP_CODE" = "422" ]; then
                 # Only treat 422 as success if it's a duplicate PR error
-                if echo "$BODY" | grep -qi "pull request already exists"; then
+                # Use jq for robust JSON parsing rather than grep on raw body
+                DUPLICATE=$(echo "$BODY" | jq -r '[.errors[]?.message // ""] | map(select(test("pull request already exists"; "i"))) | length' 2>/dev/null || echo "0")
+                if [ "$DUPLICATE" -gt "0" ]; then
                   echo "Release PR already exists — skipping."
                 else
                   echo "PR creation failed with unexpected 422: $BODY"
