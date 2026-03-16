@@ -39,6 +39,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
+    "@types/node": "^24.12.0",
     "axios": "^1.13.6",
     "axios-retry": "~4.5.0"
   },
